@@ -19,7 +19,7 @@ namespace Calculate
 
         private List<string> Separation(string enterText)
         {
-            string remainder = enterText.Replace(" ", "");
+            string remainder = enterText.Replace(" ", "").Replace("\n", "").Replace("\t", "");
             List<string> split_list = new List<string>();
             if (String.IsNullOrEmpty(remainder)) throw new Exception("Введите данные");
             if (IsConvertingToDouble(remainder))
@@ -56,7 +56,7 @@ namespace Calculate
             List<ElementInfo> elements = new List<ElementInfo>();
             for (int i = 0; i < split_list.Count; i++)
                 elements.Add(new ElementInfo(split_list[i], Type_definition(split_list[i]), i));
-            elements = elements.Where(x => x._type != Types.Trash).ToList();
+            elements = elements.Where(x => x.type != Types.Trash).ToList();
             CleanList(ref elements);
             SetNewIndex(ref elements);
             return elements;
@@ -67,23 +67,23 @@ namespace Calculate
             int CountList = elements.Count;
             for (int i = 0; i < CountList; i++)
             {
-                if (elements.First()._element == "-" && elements[1]._type == Types.Number)
+                if (elements.First().content == "-" && elements[1].type == Types.Number)
                 {
-                    elements[0] = new ElementInfo(elements[0]._element + elements[1]._element, Types.Number, 0);
+                    elements[0] = new ElementInfo(elements[0].content + elements[1].content, Types.Number, 0);
                     elements.RemoveAt(1);
                 }
-                else if (elements.First()._type == Types.Arithmetic_operators)
+                else if (elements.First().type == Types.Arithmetic_operators)
                     elements.Remove(elements.First());
-                else if (elements.Last()._type == Types.Arithmetic_operators)
+                else if (elements.Last().type == Types.Arithmetic_operators)
                     elements.Remove(elements.Last());
-                else if (elements.First()._type != Types.Arithmetic_operators && elements.Last()._type != Types.Arithmetic_operators) break;
+                else if (elements.First().type != Types.Arithmetic_operators && elements.Last().type != Types.Arithmetic_operators) break;
             }
             for (int i = 0, Cbrace = 0; i < elements.Count; i++)
             {
-                if (elements[i]._type == Types.Arithmetic_operators && elements[i + 1]._type == Types.Arithmetic_operators)
+                if (elements[i].type == Types.Arithmetic_operators && elements[i + 1].type == Types.Arithmetic_operators)
                     throw new Exception("Ошибка");
-                if (elements[i]._element == "(") Cbrace++;
-                else if (elements[i]._element == ")") Cbrace--;
+                if (elements[i].content == "(") Cbrace++;
+                else if (elements[i].content == ")") Cbrace--;
                 if (i == elements.Count - 1 && Cbrace != 0) throw new Exception("Ошибка");
             }
         }
@@ -91,48 +91,74 @@ namespace Calculate
         private double BraceSearch(List<string> split_list)
         {
             List<ElementInfo> elements = List_Edit(split_list);
-            bool find = FindRangeBrace(elements, out List<int> rangebrace);
-
-            return 0;//CourseOfAction1(elements);
+            bool find = FindRangeBrace(elements, out IntPair intPair);
+            if (find == true)
+            {
+                List<ElementInfo> part = elements.GetRange(intPair.istart, intPair.count);
+                SetNewIndex(ref part);
+                ElementInfo elementinfo = new ElementInfo(BraceSearch(part).ToString(), Types.Number, intPair.istart - 1);
+                elements[intPair.istart - 1] = elementinfo;
+                elements.RemoveRange(intPair.istart, intPair.count + 1);
+                SetNewIndex(ref elements);
+                return BraceSearch(elements);
+            }
+            else
+                return CourseOfAction(elements);
+        }
+        private double BraceSearch(List<ElementInfo> elements)
+        {
+            bool find = FindRangeBrace(elements, out IntPair intPair);
+            if (find == true)
+            {
+                List<ElementInfo> part = elements.GetRange(intPair.istart, intPair.count);
+                SetNewIndex(ref part);
+                ElementInfo elementinfo = new ElementInfo(BraceSearch(part).ToString(), Types.Number, intPair.istart - 1);
+                elements[intPair.istart - 1] = elementinfo;
+                elements.RemoveRange(intPair.istart, intPair.count + 1);
+                SetNewIndex(ref elements);
+                return BraceSearch(elements);
+            }
+            else
+                return CourseOfAction(elements);
         }
 
-        private bool FindRangeBrace(List<ElementInfo> elements, out List<int> rangebrace)
+        private bool FindRangeBrace(List<ElementInfo> elements, out IntPair intPair)
         {
-            rangebrace = new List<int>();
-            if (!elements.Any(x => x._type == Types.Brace)) return false;
-            for (int i = 0, Cbrace = 0; i < elements.Count; i++)
+            intPair = new IntPair();
+            if (!elements.Any(x => x.type == Types.Brace)) return false;
+            for (int i = 0, brace = 0; i < elements.Count; i++)
             {
-                if (elements[i]._element == "(")
+                if (elements[i].content == "(")
                 {
-                    Cbrace++;
+                    if (brace == 0)
+                        intPair.istart = i + 1;
+                    brace++;
                 }
-                if (elements[i]._element == ")") Cbrace--;
+                else if (elements[i].content == ")")
+                {
+                    brace--;
+                    if (brace == 0)
+                    {
+                        intPair.count = i - intPair.istart;
+                        break;
+                    }
+                }
             }
-
             return true;
         }
 
-        private double CourseOfAction1(List<ElementInfo> elements)
+        private double CourseOfAction(List<ElementInfo> elements)
         {
-            int _Count = elements.Where(x => x._type == Types.Arithmetic_operators).ToList().Count;
+            int _Count = elements.Where(x => x.type == Types.Arithmetic_operators).ToList().Count;
             for (int i = 0; i < _Count; i++)
                 CalcuationElement(ref elements);
-            return Convert.ToDouble(elements.First()._element);
-        }
-
-        private double CourseOfAction(List<string> split_list)
-        {
-            List<ElementInfo> elements = List_Edit(split_list);
-            int _Count = elements.Where(x => x._type == Types.Arithmetic_operators).ToList().Count;
-            for (int i = 0; i < _Count; i++)
-                CalcuationElement(ref elements);
-            return Convert.ToDouble(elements.First()._element);
+            return Convert.ToDouble(elements.First().content);
         }
 
         private void CalcuationElement(ref List<ElementInfo> elements)
         {
             int index = FindFirstAct(elements);
-            elements[index] = new ElementInfo(Calcutating(Convert.ToDouble(elements[index - 1]._element), Convert.ToDouble(elements[index + 1]._element), elements[index]._element).ToString(), Types.Number, index);
+            elements[index] = new ElementInfo(Calcutating(Convert.ToDouble(elements[index - 1].content), Convert.ToDouble(elements[index + 1].content), elements[index].content).ToString(), Types.Number, index);
             elements.RemoveAt(index + 1);
             elements.RemoveAt(index - 1);
             SetNewIndex(ref elements);
@@ -141,19 +167,19 @@ namespace Calculate
         private void SetNewIndex(ref List<ElementInfo> elements)
         {
             for (int i = 0; i < elements.Count; i++)
-                elements[i] = new ElementInfo(elements[i]._element, elements[i]._type, i);
+                elements[i] = new ElementInfo(elements[i].content, elements[i].type, i);
         }
 
         private int FindFirstAct(List<ElementInfo> elements)
         {
-            if (elements.Any(x => x._element == "*") || elements.Any(x => x._element == "/"))
-                return (elements.Where(x => x._element == "*").DefaultIfEmpty(new ElementInfo("", new Types(), int.MaxValue)).First()._number < elements.Where(x => x._element == "/").DefaultIfEmpty(new ElementInfo("", new Types(), int.MaxValue)).First()._number) ?
-                        elements.FirstOrDefault(x => x._element == "*")._number :
-                        elements.FirstOrDefault(x => x._element == "/")._number;
-            if (elements.Any(x => x._element == "+") || elements.Any(x => x._element == "-"))
-                return (elements.Where(x => x._element == "+").DefaultIfEmpty(new ElementInfo("", new Types(), int.MaxValue)).First()._number < elements.Where(x => x._element == "-").DefaultIfEmpty(new ElementInfo("", new Types(), int.MaxValue)).First()._number) ?
-                        elements.FirstOrDefault(x => x._element == "+")._number :
-                        elements.FirstOrDefault(x => x._element == "-")._number;
+            if (elements.Any(x => x.content == "*") || elements.Any(x => x.content == "/"))
+                return (elements.Where(x => x.content == "*").DefaultIfEmpty(new ElementInfo("", new Types(), int.MaxValue)).First().indexn < elements.Where(x => x.content == "/").DefaultIfEmpty(new ElementInfo("", new Types(), int.MaxValue)).First().indexn) ?
+                        elements.FirstOrDefault(x => x.content == "*").indexn :
+                        elements.FirstOrDefault(x => x.content == "/").indexn;
+            if (elements.Any(x => x.content == "+") || elements.Any(x => x.content == "-"))
+                return (elements.Where(x => x.content == "+").DefaultIfEmpty(new ElementInfo("", new Types(), int.MaxValue)).First().indexn < elements.Where(x => x.content == "-").DefaultIfEmpty(new ElementInfo("", new Types(), int.MaxValue)).First().indexn) ?
+                        elements.FirstOrDefault(x => x.content == "+").indexn :
+                        elements.FirstOrDefault(x => x.content == "-").indexn;
             return -1;
         }
 
@@ -171,34 +197,46 @@ namespace Calculate
 
         public double Converting(string enterText)
         {
-            return CourseOfAction(Separation(enterText));
+            return BraceSearch(Separation(enterText));
+        }
+
+        private struct IntPair
+        {
+            internal int istart;
+            internal int count;
+
+            internal IntPair(int istart, int count)
+            {
+                this.istart = istart;
+                this.count = count;
+            }
         }
 
         private struct ElementInfo
         {
-            internal string _element;
-            internal Types _type;
-            internal int _number;
+            internal string content;
+            internal Types type;
+            internal int indexn;
 
             internal ElementInfo(string elem, Types typ)
             {
-                _element = elem;
-                _type = typ;
-                _number = -1;
+                content = elem;
+                type = typ;
+                indexn = -1;
             }
 
             internal ElementInfo(string elem, int num)
             {
-                _element = elem;
-                _type = new Types();
-                _number = num;
+                content = elem;
+                type = new Types();
+                indexn = num;
             }
 
             internal ElementInfo(string elem, Types typ, int num)
             {
-                _element = elem;
-                _type = typ;
-                _number = num;
+                content = elem;
+                type = typ;
+                indexn = num;
             }
         }
 
