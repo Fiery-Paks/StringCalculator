@@ -25,7 +25,8 @@ namespace Calculate
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            textBoxMain.Text = "((10+50)*10)/10-5*2+(10-1)";//"10/10+510-65*4";
+            textBoxMain.Text = "((10+50)*10)/10-5*2+(10-1)+1";//"10/10+510-65*4";
+            //textBoxMain.Text = "2+(10-4)*(10)+2";
         }
     }
 }

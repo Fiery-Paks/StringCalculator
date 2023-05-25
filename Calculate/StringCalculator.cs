@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Calculate
 {
@@ -19,7 +16,7 @@ namespace Calculate
 
         private List<string> Separation(string enterText)
         {
-            string remainder = enterText.Replace(" ", "").Replace("\n", "").Replace("\t", "");
+            string remainder = enterText.Replace(" ", "").Replace("\t", "").Replace("\n", "");
             List<string> split_list = new List<string>();
             if (String.IsNullOrEmpty(remainder)) throw new Exception("Введите данные");
             if (IsConvertingToDouble(remainder))
@@ -34,7 +31,8 @@ namespace Calculate
                     split_list.Add(remainder.Split(enterText[i]).First());
                     remainder = enterText.Remove(0, i + 1);
                     split_list.Add(enterText[i].ToString());
-                    if (remainder.Length != 0 && IsConvertingToDouble(remainder)) split_list.Add(remainder);
+                    if (remainder.Length != 0 && IsConvertingToDouble(remainder) && !Arithmetic_operators.Contains(remainder.First()))
+                        split_list.Add(remainder);
                 }
             }
             return split_list;
@@ -88,32 +86,19 @@ namespace Calculate
             }
         }
 
-        private double BraceSearch(List<string> split_list)
+        private double Finding_Solutions(List<string> split_list)
         {
             List<ElementInfo> elements = List_Edit(split_list);
-            bool find = FindRangeBrace(elements, out IntPair intPair);
-            if (find == true)
-            {
-                List<ElementInfo> part = elements.GetRange(intPair.istart, intPair.count);
-                SetNewIndex(ref part);
-                ElementInfo elementinfo = new ElementInfo(BraceSearch(part).ToString(), Types.Number, intPair.istart - 1);
-                elements[intPair.istart - 1] = elementinfo;
-                elements.RemoveRange(intPair.istart, intPair.count + 1);
-                SetNewIndex(ref elements);
-                return BraceSearch(elements);
-            }
-            else
-                return CourseOfAction(elements);
+            return BraceSearch(elements);
         }
+
         private double BraceSearch(List<ElementInfo> elements)
         {
-            bool find = FindRangeBrace(elements, out IntPair intPair);
-            if (find == true)
+            if (FindRangeBrace(elements, out IntPair intPair) == true)
             {
                 List<ElementInfo> part = elements.GetRange(intPair.istart, intPair.count);
                 SetNewIndex(ref part);
-                ElementInfo elementinfo = new ElementInfo(BraceSearch(part).ToString(), Types.Number, intPair.istart - 1);
-                elements[intPair.istart - 1] = elementinfo;
+                elements[intPair.istart - 1] = new ElementInfo(BraceSearch(part).ToString(), Types.Number, intPair.istart - 1);
                 elements.RemoveRange(intPair.istart, intPair.count + 1);
                 SetNewIndex(ref elements);
                 return BraceSearch(elements);
@@ -197,7 +182,7 @@ namespace Calculate
 
         public double Converting(string enterText)
         {
-            return BraceSearch(Separation(enterText));
+            return Finding_Solutions(Separation(enterText));
         }
 
         private struct IntPair
