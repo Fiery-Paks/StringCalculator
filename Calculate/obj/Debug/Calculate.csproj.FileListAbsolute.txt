@@ -29,3 +29,8 @@ C:\Users\Антон\Desktop\Разработка\!KATA\StringCalculator\Calculat
 C:\Users\Антон\Desktop\Разработка\!KATA\StringCalculator\Calculate\obj\Debug\Calculate.csproj.CoreCompileInputs.cache
 C:\Users\Антон\Desktop\Разработка\!KATA\StringCalculator\Calculate\obj\Debug\Calculate.exe
 C:\Users\Антон\Desktop\Разработка\!KATA\StringCalculator\Calculate\obj\Debug\Calculate.pdb
+C:\Users\Антон\Desktop\Разработка\!KATA\StringCalculator\Calculate\bin\Debug\DryIoc.dll
+C:\Users\Антон\Desktop\Разработка\!KATA\StringCalculator\Calculate\bin\Debug\System.ValueTuple.dll
+C:\Users\Антон\Desktop\Разработка\!KATA\StringCalculator\Calculate\bin\Debug\DryIoc.xml
+C:\Users\Антон\Desktop\Разработка\!KATA\StringCalculator\Calculate\bin\Debug\System.ValueTuple.xml
+C:\Users\Антон\Desktop\Разработка\!KATA\StringCalculator\Calculate\obj\Debug\Calculate.csproj.CopyComplete
