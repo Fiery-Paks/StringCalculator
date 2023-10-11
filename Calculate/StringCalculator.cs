@@ -67,12 +67,8 @@ namespace Calculate
             int CountList = elements.Count;
             for (int i = 0; i < CountList; i++)
             {
-                if (elements.First().content == "-" && elements[1].type == Types.Number)//сделать для каждой переменной со знаком минус
-                {
-                    elements[0] = new ElementInfo(elements[0].content + elements[1].content, Types.Number, 0);
-                    elements.RemoveAt(1);
-                }
-                else if (elements.First().type == Types.ArithmeticOperators)
+                ConcatenationSubtraction(ref elements);
+                if (elements.First().type == Types.ArithmeticOperators)
                     elements.Remove(elements.First());
                 else if (elements.Last().type == Types.ArithmeticOperators)
                     elements.Remove(elements.Last());
@@ -91,6 +87,7 @@ namespace Calculate
                     throw new KeyOperatorsException("Скобка не закрывается");
             }
         }
+
 
         protected virtual double Finding_Solutions(List<string> split_list)
         {
@@ -141,10 +138,20 @@ namespace Calculate
 
         protected virtual double CourseOfAction(List<ElementInfo> elements)
         {
+            ConcatenationSubtraction(ref elements);
             int count = elements.Where(x => x.type == Types.ArithmeticOperators).ToList().Count;
             for (int i = 0; i < count; i++)
                 CalcuationElement(ref elements);
             return Convert.ToDouble(elements.First().content);
+        }
+
+        protected virtual void ConcatenationSubtraction(ref List<ElementInfo> elements)
+        {
+            if (elements.First().content == "-" && elements[1].type == Types.Number)
+            {
+                elements[0] = new ElementInfo(elements[0].content + elements[1].content, Types.Number, 0);
+                elements.RemoveAt(1);
+            }
         }
 
         protected virtual void CalcuationElement(ref List<ElementInfo> elements)
