@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Calculate
 {
-    public class StringCalculator 
+    public class StringCalculator
     {
         protected IReadOnlyCollection<char> KeyOperators = new List<char>() { '*', '/', '+', '-', '(', ')' };
 
@@ -78,7 +78,7 @@ namespace Calculate
             for (int i = 0, Cbrace = 0; i < elements.Count; i++)
             {
                 if (elements[i].type == Types.ArithmeticOperators && elements[i + 1].type == Types.ArithmeticOperators)
-                    throw new KeyOperatorsException("Ошибка два арефметических оператора подряд");
+                    throw new KeyOperatorsException("Два арефметических оператора подряд");
                 if (elements[i].content == "(")
                     Cbrace++;
                 else if (elements[i].content == ")")
@@ -87,7 +87,6 @@ namespace Calculate
                     throw new KeyOperatorsException("Скобка не закрывается");
             }
         }
-
 
         protected virtual double Finding_Solutions(List<string> split_list)
         {
@@ -152,6 +151,10 @@ namespace Calculate
                 elements[0] = new ElementInfo(elements[0].content + elements[1].content, Types.Number, 0);
                 elements.RemoveAt(1);
             }
+            else if (elements.First().content == "+" && elements[1].type == Types.Number)
+            {
+                elements.RemoveAt(0);
+            }
         }
 
         protected virtual void CalcuationElement(ref List<ElementInfo> elements)
@@ -169,7 +172,6 @@ namespace Calculate
                 elements[i] = new ElementInfo(elements[i].content, elements[i].type, i);
         }
 
-        //!!
         protected virtual int FindFirstAct(List<ElementInfo> elements)
         {
             if (elements.Any(x => x.content == "*") || elements.Any(x => x.content == "/"))
@@ -180,7 +182,7 @@ namespace Calculate
                 return (elements.Where(x => x.content == "+").DefaultIfEmpty(new ElementInfo("", new Types(), int.MaxValue)).First().indexn < elements.Where(x => x.content == "-").DefaultIfEmpty(new ElementInfo("", new Types(), int.MaxValue)).First().indexn) ?
                         elements.FirstOrDefault(x => x.content == "+").indexn :
                         elements.FirstOrDefault(x => x.content == "-").indexn;
-            return -1;
+            throw new CalcutatingException("Невозможно найти первое действие");
         }
 
         protected virtual double Calcutating(double number1, double number2, string operation)
@@ -217,7 +219,7 @@ namespace Calculate
             }
         }
 
-        protected struct ElementInfo
+        protected class ElementInfo
         {
             internal string content;
             internal Types type;
@@ -252,24 +254,24 @@ namespace Calculate
             Number,
             Trash
         }
-    }
 
-    internal class SeparationException : Exception
-    {
-        public SeparationException(string message) : base(message)
-        { }
-    }
+        protected class SeparationException : Exception
+        {
+            public SeparationException(string message) : base(message)
+            { }
+        }
 
-    internal class CalcutatingException : Exception
-    {
-        public CalcutatingException(string message) : base(message)
-        { }
-    }
+        protected class CalcutatingException : Exception
+        {
+            public CalcutatingException(string message) : base(message)
+            { }
+        }
 
-    internal class KeyOperatorsException : Exception
-    {
-        public KeyOperatorsException(string message) : base(message)
-        { }
+        protected class KeyOperatorsException : Exception
+        {
+            public KeyOperatorsException(string message) : base(message)
+            { }
+        }
     }
 }
 

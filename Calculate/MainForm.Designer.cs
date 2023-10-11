@@ -42,17 +42,18 @@ namespace Calculate
             this.textBoxMain.Location = new System.Drawing.Point(12, 30);
             this.textBoxMain.Multiline = true;
             this.textBoxMain.Name = "textBoxMain";
-            this.textBoxMain.Size = new System.Drawing.Size(504, 101);
+            this.textBoxMain.Size = new System.Drawing.Size(585, 214);
             this.textBoxMain.TabIndex = 0;
             this.textBoxMain.TextChanged += new System.EventHandler(this.textBoxMain_TextChanged);
             // 
             // labelAnswer
             // 
-            this.labelAnswer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.labelAnswer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.labelAnswer.Font = new System.Drawing.Font("Microsoft Sans Serif", 21.75F);
-            this.labelAnswer.Location = new System.Drawing.Point(537, 33);
+            this.labelAnswer.Location = new System.Drawing.Point(618, 33);
             this.labelAnswer.Name = "labelAnswer";
-            this.labelAnswer.Size = new System.Drawing.Size(219, 98);
+            this.labelAnswer.Size = new System.Drawing.Size(219, 211);
             this.labelAnswer.TabIndex = 1;
             this.labelAnswer.Text = "Answer";
             this.labelAnswer.Click += new System.EventHandler(this.labelAnswer_Click);
@@ -61,7 +62,7 @@ namespace Calculate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(768, 143);
+            this.ClientSize = new System.Drawing.Size(849, 256);
             this.Controls.Add(this.labelAnswer);
             this.Controls.Add(this.textBoxMain);
             this.Name = "MainForm";

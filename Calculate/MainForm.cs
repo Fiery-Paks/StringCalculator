@@ -19,9 +19,8 @@ namespace Calculate
 
         private void textBoxMain_TextChanged(object sender, EventArgs e)
         {
-            //  try { 
-
-            //}  catch (Exception ex) { labelAnswer.Text = ex.Message; }
+            try {  labelAnswer.Text = new StringCalculator().Converting(textBoxMain.Text).ToString();  }
+            catch (Exception ex) { labelAnswer.Text = ex.Message; }
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -33,7 +32,6 @@ namespace Calculate
 
         private void labelAnswer_Click(object sender, EventArgs e)
         {
-            labelAnswer.Text = new StringCalculator().Converting(textBoxMain.Text).ToString();
         }
     }
 }
