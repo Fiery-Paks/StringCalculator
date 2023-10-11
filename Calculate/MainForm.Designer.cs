@@ -65,6 +65,7 @@ namespace Calculate
             this.ClientSize = new System.Drawing.Size(849, 256);
             this.Controls.Add(this.labelAnswer);
             this.Controls.Add(this.textBoxMain);
+            this.MinimumSize = new System.Drawing.Size(865, 295);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";

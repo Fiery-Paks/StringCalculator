@@ -137,7 +137,8 @@ namespace Calculate
 
         protected virtual double CourseOfAction(List<ElementInfo> elements)
         {
-            if (IsEmptyOrArifOper(elements)) return 0;
+            if (IsEmptyOrArifOper(elements))
+                return 0;
             ConcatenationSubtraction(ref elements);
             int count = elements.Where(x => x.type == Types.ArithmeticOperators).ToList().Count;
             for (int i = 0; i < count; i++)
@@ -162,7 +163,7 @@ namespace Calculate
                 elements[0] = new ElementInfo(elements[0].content + elements[1].content, Types.Number, 0);
                 elements.RemoveAt(1);
             }
-            else if (elements.First().content == "+" && elements[1].type == Types.Number)
+            else if (elements.First().type == Types.ArithmeticOperators && elements[1].type == Types.Number)
             {
                 elements.RemoveAt(0);
             }
