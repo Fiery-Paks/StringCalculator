@@ -137,11 +137,22 @@ namespace Calculate
 
         protected virtual double CourseOfAction(List<ElementInfo> elements)
         {
+            if (IsEmptyOrArifOper(elements)) return 0;
             ConcatenationSubtraction(ref elements);
             int count = elements.Where(x => x.type == Types.ArithmeticOperators).ToList().Count;
             for (int i = 0; i < count; i++)
                 CalcuationElement(ref elements);
             return Convert.ToDouble(elements.First().content);
+        }
+
+        protected virtual bool IsEmptyOrArifOper(List<ElementInfo> elements)
+        {
+            if (elements.Count == 0)
+                return true;
+            if (elements.Count == 1)
+                if (elements.First().type == Types.ArithmeticOperators)
+                    return true;
+            return false;
         }
 
         protected virtual void ConcatenationSubtraction(ref List<ElementInfo> elements)
@@ -154,6 +165,10 @@ namespace Calculate
             else if (elements.First().content == "+" && elements[1].type == Types.Number)
             {
                 elements.RemoveAt(0);
+            }
+            if (elements.Last().type == Types.ArithmeticOperators)
+            {
+                elements.Remove(elements.Last());
             }
         }
 
@@ -198,7 +213,7 @@ namespace Calculate
                 case "*":
                     return number1 * number2;
                 default:
-                    return 0;
+                    throw new CalcutatingException("Неизвестная операция");
             }
         }
 
