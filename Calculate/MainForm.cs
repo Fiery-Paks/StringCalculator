@@ -19,23 +19,21 @@ namespace Calculate
 
         private void textBoxMain_TextChanged(object sender, EventArgs e)
         {
-            try { labelAnswer.Text = new StringCalculator().Converting(textBoxMain.Text).ToString(); }
-            catch (Exception ex) { labelAnswer.Text = ex.Message; }
+            //  try { 
+
+            //}  catch (Exception ex) { labelAnswer.Text = ex.Message; }
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            
-            textBoxMain.Text = "((10+50)*10)/10-5*2+(10-1)+1";//"10/10+510-65*4";
-            //textBoxMain.Text = "2+(10-4)*(10)+2";
-        }
-    }
 
-    class SC : StringCalculator
-    {
-        public override double Converting(string txt)
+            //textBoxMain.Text = "((10+50)*10)/10-5*2+(10-1)+1";//"10/10+510-65*4";
+            textBoxMain.Text = "2+(2.+6)";
+        }
+
+        private void labelAnswer_Click(object sender, EventArgs e)
         {
-            return 0;
+            labelAnswer.Text = new StringCalculator().Converting(textBoxMain.Text).ToString();
         }
     }
 }

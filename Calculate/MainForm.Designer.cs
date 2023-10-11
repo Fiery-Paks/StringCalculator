@@ -55,6 +55,7 @@ namespace Calculate
             this.labelAnswer.Size = new System.Drawing.Size(219, 98);
             this.labelAnswer.TabIndex = 1;
             this.labelAnswer.Text = "Answer";
+            this.labelAnswer.Click += new System.EventHandler(this.labelAnswer_Click);
             // 
             // MainForm
             // 

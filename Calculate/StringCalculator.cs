@@ -4,13 +4,14 @@ using System.Linq;
 
 namespace Calculate
 {
-    public class StringCalculator
+    public class StringCalculator 
     {
         protected IReadOnlyCollection<char> KeyOperators = new List<char>() { '*', '/', '+', '-', '(', ')' };
 
         protected virtual bool IsConvertingToDouble(string elemet)
         {
-            if (double.TryParse(elemet, out _)) return true;
+            if (double.TryParse(elemet, out _))
+                return true;
             return false;
         }
 
@@ -18,7 +19,8 @@ namespace Calculate
         {
             var remainder = enterText.Replace(" ", "").Replace("\t", "").Replace("\n", "");
             var split_list = new List<string>();
-            if (String.IsNullOrEmpty(remainder)) throw new Exception("Введите данные");
+            if (String.IsNullOrEmpty(remainder))
+                throw new SeparationException("Нет данных для вычесления");
             if (IsConvertingToDouble(remainder))
             {
                 split_list.Add(remainder);
@@ -80,13 +82,13 @@ namespace Calculate
             for (int i = 0, Cbrace = 0; i < elements.Count; i++)
             {
                 if (elements[i].type == Types.ArithmeticOperators && elements[i + 1].type == Types.ArithmeticOperators)
-                    throw new Exception("Ошибка");
+                    throw new KeyOperatorsException("Ошибка два арефметических оператора подряд");
                 if (elements[i].content == "(")
                     Cbrace++;
                 else if (elements[i].content == ")")
                     Cbrace--;
                 if (i == elements.Count - 1 && Cbrace != 0)
-                    throw new Exception("Ошибка");
+                    throw new KeyOperatorsException("Скобка не закрывается");
             }
         }
 
@@ -178,11 +180,16 @@ namespace Calculate
         {
             switch (operation)
             {
-                case "+": return number1 + number2;
-                case "-": return number1 - number2;
-                case "/": return number2 != 0 ? number1 / number2 : throw new Exception("Запрещенно делить на 0");
-                case "*": return number1 * number2;
-                default: return 0;
+                case "+":
+                    return number1 + number2;
+                case "-":
+                    return number1 - number2;
+                case "/":
+                    return number2 != 0 ? number1 / number2 : throw new CalcutatingException("Запрещенно делить на 0");
+                case "*":
+                    return number1 * number2;
+                default:
+                    return 0;
             }
         }
 
@@ -238,6 +245,24 @@ namespace Calculate
             Number,
             Trash
         }
+    }
+
+    internal class SeparationException : Exception
+    {
+        public SeparationException(string message) : base(message)
+        { }
+    }
+
+    internal class CalcutatingException : Exception
+    {
+        public CalcutatingException(string message) : base(message)
+        { }
+    }
+
+    internal class KeyOperatorsException : Exception
+    {
+        public KeyOperatorsException(string message) : base(message)
+        { }
     }
 }
 
