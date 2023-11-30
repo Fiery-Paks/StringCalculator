@@ -20,7 +20,7 @@ namespace Calculate
             var remainder = enterText.Replace(" ", "").Replace("\t", "").Replace("\n", "");
             var split_list = new List<string>();
             if (String.IsNullOrEmpty(remainder))
-                throw new SeparationException("Нет данных для вычесления");
+                throw new SeparationException("Нет данных для вычисления");
             if (IsConvertingToDouble(remainder))
             {
                 split_list.Add(remainder);
