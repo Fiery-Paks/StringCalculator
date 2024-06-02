@@ -50,3 +50,4 @@ C:\Users\Паокин\Documents\GitHub\StringCalculator\Calculate\obj\Debug\Calc
 C:\Users\Паокин\Documents\GitHub\StringCalculator\Calculate\obj\Debug\Calculate.csproj.CopyComplete
 C:\Users\Паокин\Documents\GitHub\StringCalculator\Calculate\obj\Debug\Calculate.exe
 C:\Users\Паокин\Documents\GitHub\StringCalculator\Calculate\obj\Debug\Calculate.pdb
+C:\Users\Антон\Desktop\Разработка\!KATA\StringCalculator\Calculate\obj\Debug\Calculate.csproj.SuggestedBindingRedirects.cache
